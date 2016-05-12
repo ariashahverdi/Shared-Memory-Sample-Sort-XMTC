@@ -1,0 +1,32 @@
+Notice: I got the heap sort from the mentioned website. and I wrote the quick sort with help of the CLRS book.
+
+
+In the serial case the cost of quick sort is T(n) = W(n) = O(nlogn) and for the heap sort the cost is also T(n) = W(n) = O(nlogn). Both of the numbers in the table for the HS and QS grows as fast as each other but probably because of some constant factor they are not exactly the same and the cost of heap sort is almost 3 times the cost of quick sort. 
+
+Cost of parallel algorithm is as follows:
+
+Step1: 
+We select sp elements randomly from A. We have p TCU units and we assign s elements to each. The total amount of work is O(sp) and time is O(s). Then we sort this sp elements using quick sort algorithm is O(sp*log(sp)) time and work. and we select p elements from this array in O(p) time and work. 
+T(n) = O(p) + O(sp*log(sp)) + Q(s)
+W(n) = O(p) + O(sp*log(sp)) + Q(sp)
+
+Step2:
+We iterate over N/p elements in p thread. For each element we do binary search in p elements which takes O(log(p)) time and work. So the total time of finding c is O((N/p)*log(p)) for total work of O(N*log(p)). 
+
+Step3:
+For each column we compute the prefix-sum. The total elements involved are p and for each one we compute the prefix sum. The total cost is O(p^2) and since we assign each column to a thread the time is O(p).
+
+Step4:
+We have p thread each working on N/p elements so the time is going to be O(N/p) and the work is going to be for all the elements O(N)
+
+Step5:
+We sort each partition which on average takes O((N/p)*log(N/p)) time for each and the total work is O(N*log(N/p))
+
+T(n) = O(p) + O(sp*log(sp)) + Q(s) + O((N/p)*log(p)) + O(p) + O(N/p) + O((N/p)*log(N/p))
+-> T(n) = O((N/p)*log(N/p))
+
+W(n) = O(p) + O(sp*log(sp)) + Q(sp) + O(N*log(p)) + O(p^2) + O(N) + O(N*log(N/p))
+-> W(n) = O(N*log(N/p))
+
+As it can be seen the performance of QS/QS is better than QS/HS and that’s basically because the performance of QS was also better than HS. we can see speedup for the d3 case of up to 5 in the QS/QS case when we compare quick sort with parallel QS/QS case. In case for d1 the serial case performs better maybe because the overhead which was introduced for all the partitioning was not negligible when the size of the input array is not big enough.
+
